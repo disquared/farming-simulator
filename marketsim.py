@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import datetime as dt
 import os.path
+import time
 import QSTK.qstkutil.qsdateutil as du
 import QSTK.qstkutil.DataAccess as da
 import QSTK.qstkutil.tsutil as tsu
@@ -134,7 +135,7 @@ def compare_portfolio_to_benchmark(portfolio, benchmark):
     cum_ret = portfolio['value_norm'][-1]
 
     # Do the same for the benchmark equity
-    c_dataobj = da.DataAccess('Yahoo')
+    c_dataobj = da.DataAccess('Yahoo') ##, cachestalltime=0)
     ls_keys = ['close']
     ldf_data = c_dataobj.get_data(list(portfolio.index), [benchmark], ls_keys)
     d_data_b = dict(zip(ls_keys, ldf_data))
@@ -204,5 +205,8 @@ def main():
 
 
 if __name__ == '__main__':
+    start_time = time.time()
     main()
+    print "--------"
+    print "Program execution time: %s seconds" % (time.time() - start_time)
 
