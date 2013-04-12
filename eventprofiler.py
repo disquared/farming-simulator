@@ -1,10 +1,11 @@
-"""
-marketeventprofiler.py:
-"""
-__author__ =    'disquared'
-__date__ =      '4/10/13'
-__copyright__ = 'Copyright 2013, Di Di'
-__email__ =     'ddi0168@gmail.com'
+#-------------------------------------------------------------------------------
+# Name:        eventprofiler.py
+#
+# Author:      Di Di (ddi0168@gmail.com)
+#
+# Created:     04/10/2013
+# Copyright:   (c) Di Di 2013
+#-------------------------------------------------------------------------------
 
 
 import numpy as np

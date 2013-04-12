@@ -1,10 +1,11 @@
-"""
-marketsim.py
-"""
-__date__        = '04/10/2013'
-__author__      = 'disquared'
-__copyright__   = 'Copyright 2013, Di Di'
-__email__       = 'ddi0168@gmail.com'
+#-------------------------------------------------------------------------------
+# Name:        marketsim.py
+#
+# Author:      Di Di (ddi0168@gmail.com)
+#
+# Created:     04/10/2013
+# Copyright:   (c) Di Di 2013
+#-------------------------------------------------------------------------------
 
 
 import pandas as pd
@@ -137,7 +138,7 @@ def compare_portfolio_to_benchmark(portfolio, benchmark):
     # Do the same for the benchmark equity
     c_dataobj = da.DataAccess('Yahoo') ##, cachestalltime=0)
     ls_keys = ['close']
-    ldf_data = c_dataobj.get_data(list(portfolio.index), [benchmark], ls_keys)
+    ldf_data = c_dataobj.get_data(list(portfolio.index + dt.timedelta(hours=16)), [benchmark], ls_keys)
     d_data_b = dict(zip(ls_keys, ldf_data))
     na_price_b = d_data_b['close'].values
     na_normalized_price_b = na_price_b / na_price_b[0]
