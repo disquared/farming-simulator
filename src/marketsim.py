@@ -7,11 +7,10 @@
 # Copyright:   (c) Di Di 2013
 #-------------------------------------------------------------------------------
 
-
 import pandas as pd
 import numpy as np
 import datetime as dt
-import os.path
+import os
 import time
 import QSTK.qstkutil.qsdateutil as du
 import QSTK.qstkutil.DataAccess as da
@@ -188,19 +187,22 @@ def write_portfolio_to_csv_file(portfolio, filename):
     portfolio['day'] = [i.date().day for (i, s) in portfolio.iterrows()]
 
     # Write the columns to a csv file
+    os.chdir('../out/')
     portfolio.to_csv(filename, cols=['year', 'month', 'day', 'value'], header=False, index=False)
+    os.chdir('../src/')
 
     return
 
 
 def main():
 
-    orders_file = os.path.relpath('hw/orders.csv')
+    orders_file = os.path.relpath('../test/orders.csv')
     starting_cash = 1000000
     benchmark = '$SPX'
 
     p = portfolio_from_orders(orders_file, starting_cash)
     compare_portfolio_to_benchmark(p, benchmark)
+    #write_portfolio_to_csv_file(p, 'marketsim_portf_results.csv')
 
     return
 

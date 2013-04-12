@@ -7,22 +7,23 @@
 # Copyright:   (c) Di Di 2013
 #-------------------------------------------------------------------------------
 
-
 import numpy as np
 import copy
 import time
+import os
 import QSTK.qstkutil.qsdateutil as du
 import datetime as dt
 import QSTK.qstkutil.DataAccess as da
 import QSTK.qstkstudy.EventProfiler as ep
 
+from event import *
 
-def find_events(ls_symbols, d_data):
+
+def five_dollar_event(ls_symbols, data, benchmark):
+
     # use actual close
-    df_close = d_data['actual_close']
-    ts_market = df_close['SPY']
-
-    print "Finding Events"
+    df_close = data['actual_close']
+    ts_market = df_close[benchmark]
 
     # Creating an empty dataframe
     df_events = copy.deepcopy(df_close)
@@ -48,28 +49,39 @@ def find_events(ls_symbols, d_data):
     return df_events
 
 def main():
-    dt_start = dt.datetime(2008, 1, 1)
-    dt_end = dt.datetime(2009, 12, 31)
-    ldt_timestamps = du.getNYSEdays(dt_start, dt_end, dt.timedelta(hours=16))
+    startdate = dt.datetime(2008, 1, 1)
+    enddate = dt.datetime(2009, 12, 31)
+    timestamps = du.getNYSEdays(startdate, enddate, dt.timedelta(hours=16))
 
     dataobj = da.DataAccess('Yahoo')
     ls_symbols = dataobj.get_symbols_from_list('sp5002012')
-    ls_symbols.append('SPY')
+    benchmark = 'SPY'
+    ls_symbols.append(benchmark)
     ls_keys = ['open', 'high', 'low', 'close', 'volume', 'actual_close']
-    ldf_data = dataobj.get_data(ldt_timestamps, ls_symbols, ls_keys)
+    ldf_data = dataobj.get_data(timestamps, ls_symbols, ls_keys)
     d_data = dict(zip(ls_keys, ldf_data))
 
     # remove NaN from price data
-    for s_key in ls_keys:
-        d_data[s_key] = d_data[s_key].fillna(method = 'ffill')
-        d_data[s_key] = d_data[s_key].fillna(method = 'bfill')
-        d_data[s_key] = d_data[s_key].fillna(1.0)
+    for k in ls_keys:
+        d_data[k] = d_data[k].fillna(method = 'ffill')
+        d_data[k] = d_data[k].fillna(method = 'bfill')
+        d_data[k] = d_data[k].fillna(1.0)
 
-    df_events = find_events(ls_symbols, d_data)
-    print "Creating Study"
+    event = Event('five_dollar_event')
+    df_events = event.find_events(ls_symbols, d_data, benchmark)
+
+    #df_events = find_events(event_func, ls_symbols, d_data, benchmark)
+
+    # Create the event study
+    print "Creating study for: " + event.event_name
+    outfile = '../out/' + event.event_name + '.pdf'
     ep.eventprofiler(df_events, d_data, i_lookback=20, i_lookforward=20,
-                     s_filename='MyEventStudy.pdf', b_market_neutral=True, b_errorbars=True,
-                     s_market_sym='SPY')
+                     s_filename=outfile, b_market_neutral=True, b_errorbars=True,
+                     s_market_sym=benchmark)
+
+    # Open the output pdf file
+    os.startfile(outfile.replace('/', '\\'))
+
 
 if __name__ == '__main__':
     start_time = time.time()

@@ -1,4 +1,6 @@
+*.pyc
 *.pdf
 *.jpg
 .idea/
 Examples/
+out/
