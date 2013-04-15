@@ -148,15 +148,16 @@ def compare_portfolio_to_benchmark(portfolio, benchmark):
     sharpe_b = np.sqrt(252) * avg_daily_ret_b / volatility_b
     cum_ret_b = na_normalized_price_b[-1][0]
 
+    print "--------"
     print "Sharpe Ratio of Fund: %s" % sharpe
     print "Sharpe Ratio of %s: %s" % (benchmark, sharpe_b)
-    print ""
+    print
     print "Standard Deviation of Fund: %s" % volatility
     print "Standard Deviation of %s: %s" % (benchmark, volatility_b)
-    print ""
+    print
     print "Total Return of Fund: %s" % cum_ret
     print "Total Return of %s: %s" % (benchmark, cum_ret_b)
-    print ""
+    print
     print "Average Daily Return of Fund: %s" % avg_daily_ret
     print "Average Daily Return %s: %s" % (benchmark, avg_daily_ret_b)
 
@@ -179,12 +180,12 @@ def write_portfolio_to_csv_file(portfolio, filename):
     """
 
     # Cast all the values to integers
-    portfolio['value'] = [int(v) for v in portfolio['value']]
+    portfolio['value'] = portfolio['value'].map(int)
 
     # Split the datetime objects to year, month, and day integers
-    portfolio['year'] = [i.date().year for (i, s) in portfolio.iterrows()]
-    portfolio['month'] = [i.date().month for (i, s) in portfolio.iterrows()]
-    portfolio['day'] = [i.date().day for (i, s) in portfolio.iterrows()]
+    portfolio['year'] = [i.year for (i, s) in portfolio.iterrows()]
+    portfolio['month'] = [i.month for (i, s) in portfolio.iterrows()]
+    portfolio['day'] = [i.day for (i, s) in portfolio.iterrows()]
 
     # Write the columns to a csv file
     os.chdir('../out/')
@@ -196,8 +197,8 @@ def write_portfolio_to_csv_file(portfolio, filename):
 
 def main():
 
-    orders_file = os.path.relpath('../test/orders.csv')
-    starting_cash = 1000000
+    orders_file = os.path.relpath('../out/five_dollar_event_orders.csv')
+    starting_cash = 50000
     benchmark = '$SPX'
 
     p = portfolio_from_orders(orders_file, starting_cash)
