@@ -1,6 +1,7 @@
 *.pyc
 *.pdf
 *.jpg
+.DS_STORE
 .idea/
 Examples/
 out/
